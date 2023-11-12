@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeLock Contract Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>TimeLock Contract Interface</h2>
+    
+    <div>
+        <label for="targetAddress">Target Address:</label>
+        <input type="text" id="targetAddress" placeholder="Enter target address">
+    </div>
+
+    <div>
+        <label for="value">Value (ETH):</label>
+        <input type="number" id="value" placeholder="Enter value in ETH">
+    </div>
+
+    <div>
+        <label for="funcSignature">Function Signature:</label>
+        <input type="text" id="funcSignature" placeholder="Enter function signature">
+    </div>
+
+    <div>
+        <label for="data">Data:</label>
+        <input type="text" id="data" placeholder="Enter ABI encoded data">
+    </div>
+
+    <div>
+        <label for="timestamp">Execution Timestamp (UNIX):</label>
+        <input type="number" id="timestamp" placeholder="Enter timestamp">
+    </div>
+
+    <button onclick="queueTransaction()">Queue Transaction</button>
+    <button onclick="executeTransaction()">Execute Transaction</button>
+    <button onclick="cancelTransaction()">Cancel Transaction</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138";
+        const contractABI = []; 
+
+        const web3 = new Web3(window.ethereum);
+
+        const timeLockContract = new web3.eth.Contract(contractABI, contractAddress);
+
+        async function queueTransaction() {
+            const target = document.getElementById("targetAddress").value;
+            const value = document.getElementById("value").value;
+            const funcSignature = document.getElementById("funcSignature").value;
+            const data = document.getElementById("data").value;
+            const timestamp = document.getElementById("timestamp").value;
+
+            
+            const timestampInSeconds = Math.floor(timestamp / 1000);
+
+            const ownerAddress = "0x4564f099Da2eB21138543b3ec99A497cCd6a7C5A"; 
+
+        
+            const result = await timeLockContract.methods.queue(
+                target,
+                web3.utils.toWei(value.toString(), "ether"),
+                funcSignature,
+                data,
+                timestampInSeconds
+            ).send({ from: ownerAddress });
+
+            console.log(result);
+        }
+
+        async function executeTransaction() {
+            
+        }
+
+        async function cancelTransaction() {
+  
+        }
+    </script>
+</body>
+</html>
